@@ -17,8 +17,12 @@ eng = create_engine('sqlite:///data/data.db')
 
 metadata = MetaData(eng)
 
-def make_table(name, layout, ttype='data'):
 
+def make_table(name, layout, ttype='data'):
+    """
+    Create sqlalchemy table metadata from
+    a layout file.
+    """
     ld = layout_to_dict(layout)
     table = Table(
         name, metadata,
@@ -47,7 +51,12 @@ def make_table(name, layout, ttype='data'):
 
     return table
 
+
 def load(processed_path, table):
+    """
+    Load the raw file into the database
+    using sqla's bulk insert.
+    """
     rows = []
     with open(processed_path) as inf:
         for row in csv.DictReader(inf, delimiter="|"):
@@ -62,17 +71,22 @@ def load(processed_path, table):
     eng.execute(table.insert(), rows)
 
 
-tax_t = make_table('tax', 'layouts/tax_layout.tsv')
-credit_t = make_table('credit_scores', 'layouts/credit_score_layout.tsv')
+def main():
+    # Create table metadata
+    tax_t = make_table('tax', 'layouts/tax_layout.tsv')
+    credit_t = make_table('credit_scores', 'layouts/credit_score_layout.tsv')
 
-tax_t.drop(eng)
-credit_t.drop(eng)
+    # Drop tables
+    tax_t.drop(eng)
+    credit_t.drop(eng)
 
-metadata.create_all()
+    # Create tables
+    metadata.create_all()
 
-for _t in metadata.tables:
-    print("Table:", _t)
+    # Load tables
+    load('data/processed/data/tax.txt', tax_t)
+    load('data/processed/data/credit_scores.txt', credit_t)
 
 
-load('data/processed/data/tax.txt', tax_t)
-load('data/processed/data/credit_scores.txt', credit_t)
+if __name__ == '__main__':
+    main()
