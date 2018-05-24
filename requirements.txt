@@ -1,0 +1,5 @@
+scons
+faker
+sqlalchemy
+jellyfish
+git+https://github.com/riipl-org/rpe.git
