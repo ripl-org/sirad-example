@@ -3,6 +3,7 @@ Create a sample database from our rpe processed files.
 """
 import csv
 import datetime
+import re
 
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
@@ -30,7 +31,7 @@ def make_table(name, layout, ttype='data'):
         cname = v['NAME']
         ctype = v['TYPE']
         if ctype == 'DATE':
-            c = Column(cname, String)
+            c = Column(cname, DateTime)
         elif ctype == 'NUMBER':
             c = Column(cname, Float)
         else:
@@ -50,6 +51,13 @@ def load(processed_path, table):
     rows = []
     with open(processed_path) as inf:
         for row in csv.DictReader(inf, delimiter="|"):
+            # Clumsily look for dates.
+            for k, v in row.items():
+                try:
+                    dv = datetime.datetime.strptime(v, "%Y-%m-%d %H:%M:%S")
+                    row[k] = dv
+                except ValueError:
+                    pass
             rows.append(row)
     eng.execute(table.insert(), rows)
 
