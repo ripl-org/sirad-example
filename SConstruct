@@ -11,7 +11,8 @@ from SCons.Script import (
 
 from builder import (
     make_data,
-    make_target_list
+    make_target_list,
+    make_db
 )
 
 tax_raw = os.path.join("data", "raw", "tax.txt")
@@ -46,3 +47,23 @@ credit_proc = env.Process(
 
 Depends(tax_proc, fake)
 Depends(credit_proc, fake)
+
+# Load
+tax_load = env.Command(
+    None,
+    tax_targets,
+    make_db,
+    LAYOUT="layouts/tax_layout.tsv",
+    NAME='tax'
+)
+
+credit_load = env.Command(
+    None,
+    credit_targets,
+    make_db,
+    LAYOUT="layouts/credit_score_layout.tsv",
+    NAME='credit_scores'
+)
+
+Depends(tax_load, tax_proc)
+Depends(credit_load, credit_proc)
