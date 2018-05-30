@@ -1,10 +1,5 @@
 """
 Generate fake data to represent values stored in a database.
-
-SSNs generated here always have the "group number" (fourth and fifth)
-digits as 00, since these are never assigned by the SSA.
-
-https://www.ssa.gov/employer/randomizationfaqs.html
 """
 
 
@@ -71,8 +66,11 @@ def tax_info(number):
 def derive_cscore_file(path):
     """
     Create fake credit scores for subset of main person list.
+
+    For some perc of people replace full first name with first initial
     """
     perc_included = .60
+    perc_first_intial = .10
     out = []
     with open(path) as inf:
         reader = csv.DictReader(inf, delimiter="|")
@@ -84,7 +82,11 @@ def derive_cscore_file(path):
                     'last',
                     'birth_date'
                 ]:
-                    d[fld] = row[fld]
+                    if (fld == 'first') and\
+                        (random.random() <= perc_first_intial):
+                        d[fld] = row[fld][0]
+                    else:
+                        d[fld] = row[fld]
                 d['credit_score'] = random.randrange(300, 850)
                 out.append(d)
     return out
