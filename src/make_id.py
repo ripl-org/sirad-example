@@ -2,7 +2,7 @@ import sys
 
 import jellyfish
 
-from db import pii_eng
+from src.db import pii_eng
 
 
 def soundex(raw):

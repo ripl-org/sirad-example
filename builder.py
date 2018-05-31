@@ -3,10 +3,10 @@ Build steps.
 """
 import os
 
-import make_data as md
-from db import load_dataset
-import make_id as mid
-from create_research import build_research
+from src import make_data as md
+from src.db import load_dataset
+from src import make_id as mid
+from src.create_research import build_research
 
 from rpe_config import OUTPUT_PATH
 
@@ -48,5 +48,5 @@ def build_research_version(target, source, env):
 
 
 def get_research_db_path(version):
-    import create_research
+    from src import create_research
     return create_research.get_db_engine(version).url.database

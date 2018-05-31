@@ -5,7 +5,7 @@ import sys
 
 from sqlalchemy import create_engine
 
-from db import data_eng, pii_eng, link_eng
+from src.db import data_eng, pii_eng, link_eng
 
 
 def get_db_engine(version):
