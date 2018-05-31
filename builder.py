@@ -8,13 +8,14 @@ from src.db import load_dataset
 from src import make_id as mid
 from src.create_research import build_research
 
-from rpe_config import OUTPUT_PATH
+from rpe import config
 
 
 def make_target_list(name):
+    output_path = config.get_option('OUTPUT_PATH')
     out = []
     for e in ['data', 'link', 'pii']:
-        t = os.path.join(OUTPUT_PATH, e, name + ".txt")
+        t = os.path.join(output_path, e, name + ".txt")
         out.append(t)
     return out
 
