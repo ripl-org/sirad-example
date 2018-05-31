@@ -5,6 +5,8 @@ import os
 
 import make_data as md
 from db import load_dataset
+import make_id as mid
+from create_research import build_research
 
 from rpe_config import OUTPUT_PATH
 
@@ -25,15 +27,26 @@ def make_db(target, source, env):
         source[1].path,
         source[2].path
     )
-    print(piif,)
-    done = load_dataset(name,
+    done = load_dataset(
+        name,
         layout,
         dataf,
         linkf,
         piif
     )
-    return done
+    return None
 
 
 def make_data(target, source, env):
     md.main(target[0].path, target[1].path)
+
+
+def build_research_version(target, source, env):
+    v = env['VERSION']
+    mid.create()
+    build_research(v)
+
+
+def get_research_db_path(version):
+    import create_research
+    return create_research.get_db_engine(version).url.database

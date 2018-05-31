@@ -79,7 +79,7 @@ def create():
     order by key
     """
 
-    pii_eng.execute("DROP VIEW IF EXISTS rpe_id")
+    pii_eng.execute("drop table if exists rpe_id")
     stmt = "create table rpe_id as\n" + q
     print(stmt, file=sys.stderr)
 

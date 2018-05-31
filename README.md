@@ -16,4 +16,25 @@ To build:
 
 `$ scons`
 
-This is a work in progress. More details to come.
+## overview
+
+`rpe` is framework for deidentifying and integrating research information.
+
+After the build finishes, an sqlite database called `research_v1` will be created in the `build` directory.
+
+This database has two tables created from synthetic data.
+
+### tax
+
+RPE_ID | RECORD_ID | SSN | JOB | BIRTH_DATE | FILE_DATE | ADJUSTED_GROSS_INCOME | IMPORT_DT
+-------|-----------|-----|-----|------------|-----------|-----------------------|----------
+
+### credit_scores
+
+RPE_ID | RECORD_ID | BIRTH_DATE | CREDIT_SCORE | IMPORT_DT
+-------|-----------|------------|--------------|----------
+
+* The RPE_ID is an anoymous identifier created from the raw data file. It can be used to join the two tables.
+* RECORD_ID uniquely identifiers the reccord.
+* All personally identifiable information has been removed.
+

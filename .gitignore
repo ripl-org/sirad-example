@@ -1,6 +1,9 @@
 *dblite
 data/*
+build/*
 !data/.gitkeep
+!data/db/.gitkeep
+!build/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

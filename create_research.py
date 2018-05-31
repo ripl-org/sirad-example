@@ -5,22 +5,22 @@ import sys
 
 from sqlalchemy import create_engine
 
-from db import eng, pii_eng, link_eng
-
-RESEARCH_VERSION = "v1"
-
-research_eng = create_engine('sqlite:///data/research_{}.db'.format(RESEARCH_VERSION))
+from db import data_eng, pii_eng, link_eng
 
 
-def link_dbs():
+def get_db_engine(version):
+    return create_engine('sqlite:///build/research_v{}.db'.format(version))
+
+
+def link_dbs(eng):
     """
     Connect data and pii using link.
 
     In actual workflow this would require some form of authentication.
     """
-    conn = research_eng.raw_connection()
+    conn = eng.raw_connection()
     c = conn.cursor()
-    c.execute("attach database '{}' AS data".format(eng.engine.url.database))
+    c.execute("attach database '{}' AS data".format(data_eng.engine.url.database))
     c.execute("attach database '{}' AS pii".format(pii_eng.engine.url.database))
     c.execute("attach database '{}' AS link".format(link_eng.engine.url.database))
 
@@ -29,8 +29,9 @@ def link_dbs():
 
 
 def build_research(version):
-    conn = link_dbs()
-    data_tables = eng.table_names()
+    research_eng = get_db_engine(version)
+    conn = link_dbs(research_eng)
+    data_tables = data_eng.table_names()
     pii_tables = pii_eng.table_names()
     has_pii = set(data_tables).intersection(set(pii_tables))
     for tbl in data_tables:
@@ -42,7 +43,7 @@ def build_research(version):
         else:
             stmt = """
             create table {table} as
-            select r.rpe_id, d.*
+            select r.RPE_ID, d.*
             from
               pii.rpe_id r
               join pii.{table} p on r.pii_id=p.pii_id and r.dsn="{table}"
@@ -55,7 +56,7 @@ def build_research(version):
 
 
 def main():
-    build_research(RESEARCH_VERSION)
+    build_research("v1")
 
 
 if __name__ == '__main__':

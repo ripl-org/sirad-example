@@ -13,11 +13,16 @@ from sqlalchemy.exc import OperationalError
 
 from rpe.layout import layout_to_dict
 
-eng = create_engine('sqlite:///data/data.db')
-pii_eng = create_engine('sqlite:///data/pii.db')
-link_eng = create_engine('sqlite:///data/link.db')
 
-metadata = MetaData(eng)
+def db_url(name):
+    return create_engine('sqlite:///data/db/{}.db'.format(name))
+
+
+data_eng = db_url('data')
+pii_eng = db_url('pii')
+link_eng = db_url('link')
+
+metadata = MetaData(data_eng)
 pii_metadata = MetaData(pii_eng)
 link_metadata = MetaData(link_eng)
 
@@ -134,55 +139,26 @@ def load(processed_path, table, named_eng):
 def load_dataset(name, layout, data_file, link_file, pii_file):
     d_table, p_table = make_table(name, layout)
 
-    try:
-        d_table.drop(eng)
-        d_table.create(eng)
-    except OperationalError:
-        pass
+    active_tables = data_eng.table_names()
+    if d_table.name in active_tables:
+        d_table.drop(data_eng)
+    d_table.create(data_eng)
 
-    load(data_file, d_table, eng)
+    load(data_file, d_table, data_eng)
 
+    # If PII exists, create those tables.
     if p_table is not None:
-        try:
+        pii_active_tables = pii_eng.table_names()
+        if p_table.name in pii_active_tables:
             p_table.drop(pii_eng)
-            p_table.create(pii_eng)
-        except OperationalError:
-            pass
+        p_table.create(pii_eng)
 
         load(pii_file, p_table, pii_eng)
         load_link_table(name, link_file)
 
 
 def main():
-    # Create table metadata
-    tax_t, pii_tax_t = make_table('tax', 'layouts/tax_layout.tsv')
-    credit_t, pii_credit_t = make_table('credit_scores', 'layouts/credit_score_layout.tsv')
-
-    # Drop tables
-    tax_t.drop(eng)
-    credit_t.drop(eng)
-
-    # Create tables
-    tax_t.create(eng)
-    credit_t.create(eng)
-
-    for tbl in [pii_tax_t, pii_credit_t]:
-        if tbl is not None:
-            try:
-                tbl.drop(pii_eng)
-            except OperationalError:
-                pass
-            tbl.create(pii_eng)
-
-    # Load tables
-    load('data/processed/data/tax.txt', tax_t, eng)
-    load('data/processed/data/credit_scores.txt', credit_t, eng)
-
-    load('data/processed/pii/tax.txt', pii_tax_t, pii_eng)
-    load('data/processed/pii/credit_scores.txt', pii_credit_t, pii_eng)
-
-    load_link_table('tax', 'data/processed/link/tax.txt')
-    load_link_table('credit_scores', 'data/processed/link/credit_scores.txt')
+    pass
 
 
 if __name__ == '__main__':
