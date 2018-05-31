@@ -11,18 +11,20 @@ def soundex(raw):
     """
     return jellyfish.soundex(raw)
 
+conn = pii_eng.raw_connection()
+conn.create_function("soundex", 1, soundex)
+
 
 def create_view(name, q):
-    pii_eng.execute("DROP VIEW IF EXISTS " + name)
+    conn.execute("DROP VIEW IF EXISTS " + name)
     q = "CREATE VIEW {} as\n".format(name) + q
     print(q, file=sys.stderr)
-    pii_eng.execute(q)
+    conn.execute(q)
     return True
 
 
 def create():
-    conn = pii_eng.raw_connection()
-    conn.create_function("soundex", 1, soundex)
+
 
     q = """
     select *
@@ -79,11 +81,11 @@ def create():
     order by key
     """
 
-    pii_eng.execute("drop table if exists rpe_id")
+    conn.execute("drop table if exists rpe_id")
     stmt = "create table rpe_id as\n" + q
     print(stmt, file=sys.stderr)
 
-    pii_eng.execute(stmt)
+    conn.execute(stmt)
 
 
 def main():
