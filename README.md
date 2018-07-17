@@ -12,7 +12,7 @@ please see our manuscript preprint:
 
 > J.S. Hastings, M. Howison, T. Lawless, J. Ucles, P. White. 2018.
 > Integrating Administrative Data for Policy Insights.
-> (link to arXiv preprint)
+> (under review)
 
 In this worked example, we simulate two administrative data sets:
 
@@ -30,8 +30,8 @@ scores in the credit history table.
 
 **Note**: the data are simulated by the `simulate.py` script using
 [Faker](https://github.com/joke2k/faker), which creates realistic PII that does
-not represent actual individuals. Any data in this example that looks
-personally identifiable is not!
+not represent actual individuals. Any data in this example that look
+personally identifiable are not!
 
 ## Installing dependencies
 
