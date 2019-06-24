@@ -113,7 +113,7 @@ def main(tax_path, cscore_path):
 
 
 if __name__ == '__main__':
-    outdir = config.get_option("RAW")
+    outdir = config.get_option("RAW_DIR")
     Path(outdir).mkdir(parents=True, exist_ok=True)
     tax_path = os.path.join(outdir, 'tax.txt')
     cscore_path = os.path.join(outdir, 'credit_scores.txt')
