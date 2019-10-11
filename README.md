@@ -78,7 +78,7 @@ Command: `python simulate.py`
 
 This script uses the [Faker](https://github.com/joke2k/faker) package to
 simulate raw data files, which are written to the `raw` directory. **Note**:
-although the suimulated files contain realistic PII, they do not represent
+although the simulated files contain realistic PII, they do not represent
 actual individuals.
 
 ### Step 2: Process the raw data into separate PII, data, and link files
@@ -127,10 +127,9 @@ sirad_id | record_id | credit_score | import_dt
 
 Notes:
 * `sirad_id` is an anonymized identifier created from the PII.
-* `record_id` is a primary key for the research/data records, and `pii_id` is a
-  shuffled primary key for the PII records.
+* `record_id` is a primary key for the research/data records (which can be linked via the link files to the shuffled `pii_id` primary key in the PII files).
 * `import_dt` is a timestamp for when the raw data were processed.
-* All PII fields (SSN, first/last, DOB) have been removed from the research database.
+* All PII fields (SSN, first/last, DOB) have been removed from the research files.
 
 In a real-world application, only the `build/research/Example_V1` directory
 would be accessible to researchers.  The data, PII, and link directories from
