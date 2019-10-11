@@ -51,7 +51,7 @@ personally identifiable are not!
 
 ## Installing dependencies
 
-Requires Python 3.6 or later.  There are several options for installing the
+Requires Python 3.7 or later.  There are several options for installing the
 dependencies (list in `requirements.txt`).
 
 You can use **pip** to install them globally with  
@@ -63,12 +63,12 @@ home directory with
 
 If you have Anaconda Python, you can use **conda** to install them in your
 root environment with  
-`conda install -c riipl-org --file requirements.txt`.
+`conda install -c ripl-org --file requirements.txt`.
 
 Or if you would prefer to create a named conda environment, use  
-`conda install -c riipl-org -n sirad-example --file requirements.txt`  
+`conda install -c ripl-org -n sirad-example --file requirements.txt`  
 and activate it with  
-`source activate sirad-example`.
+`conda activate sirad-example`.
 
 ## Running the example
 
