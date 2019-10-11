@@ -76,6 +76,11 @@ and activate it with
 
 Command: `python simulate.py`
 
+This script uses the [Faker](https://github.com/joke2k/faker) package to
+simulate raw data files, which are written to the `raw` directory. **Note**:
+although the suimulated files contain realistic PII, they do not represent
+actual individuals.
+
 ### Step 2: Process the raw data into separate PII, data, and link files
 
 Command: `sirad process`
@@ -93,35 +98,29 @@ the order of the PII rows when writing to the PII file. The data file has the
 same row order as the raw data file.  The link file provides a lookup table
 that re-links the shuffled PII rows to the data rows.
 
-### Step 3: Stage the processed files in a database
+The results are organized in the following directory structure:
+* `build/data/Example_V1`: processed data files
+* `build/pii/Example_V1`: processed PII files
+* `build/link/Example_V1`: processed link files
 
-Command: `sirad stage`
+### Step 3: Create a versioned research database
 
-This step stages the PII, data, and link files in a relational database.
+Command: `sirad research`
 
-### Step 4: Create a versioned research database
+This step uses the PII files to construct a global anonymized identifier (the
+`sirad_id`), then uses the link files to attach it to each data file.  The
+result is a set of **research** files which contain no PII, but in which
+individual-level data in different files can be joined by the anonymized
+identifier. Research files are versioned to support reproducible analysis,
+using the current version set in `sirad_config.py`. You will find two research
+files in the `build/research/Example_V1` directory:
 
-Command: `sirad research --version 1`
-
-This step uses the PII database to construct a global anonymized identifier
-(the `sirad_id`), then uses the link files to attach it to each data table in
-the database.  The result is a **research** database which contains no PII, but
-in which individual-level data in different tables can be joined by the
-anonymized identifier. Research databases are versioned to support reproducible
-analysis.
-
-## Resulting database
-
-After the build finishes, an sqlite database called `research_v1.db` will be
-created in the `build` directory.  This database has two tables created from
-the simulated data:
-
-### tax
+#### tax.txt
 
 sirad_id | record_id | job | file_date | adjusted_gross_income | import_dt
 -|-|-|-|-|-
 
-### credit_scores
+#### credit_scores.txt
 
 sirad_id | record_id | credit_score | import_dt
 -|-|-|-
@@ -133,26 +132,22 @@ Notes:
 * `import_dt` is a timestamp for when the raw data were processed.
 * All PII fields (SSN, first/last, DOB) have been removed from the research database.
 
-The results are organized in the following directory structure:
-* `raw/`: the simulated raw data files
-* `build/processed`: processed data files (organized by `data`, `pii`, and `link`)
-* `build/db`: the staging databases for the processed files
-* `build/research_v1.db`: the final research database
+In a real-world application, only the `build/research/Example_V1` directory
+would be accessible to researchers.  The data, PII, and link directories from
+the processing step above should be stored in a restricted location that is
+inaccessible to any individual researcher, for example by using encryption with
+a multi-party key or passphrase, auditing, real-time alerting, and/or other
+appropriate security controls that ensure an individual researcher cannot
+access build files that contain PII.
 
-In a real-world application, only the `research_v1.db` database would be
-accessible to researchers.  The `raw`, `processed`, and `db` directories should
-be stored in a restricted location that is inaccessible to any individual
-researcher, for example by using encryption with a multi-party key or
-passphrase, auditing, real-time alerting, and/or other appropriate security
-controls that ensure an individual researcher cannot access build files that
-contain PII.
+### Step 4: Example analysis
 
-## Example analysis
+Command: `python scatterplot.py`
 
-`scatterplot.py` demonstrates an analysis that uses the `sirad_id` to
+This step demonstrates an analysis that uses the `sirad_id` to
 anonymously join records about individuals. It selects adjusted gross income
 from the `tax` table joined to the corresponding credit score from the
-`credit_scores` table, then generates this scatter plot:
+`credit_scores` table, then generates this scatter plot (`scatterplot.png`):
 
 ![scatterplot](scatterplot.png)
 
