@@ -63,10 +63,10 @@ home directory with
 
 If you have Anaconda Python, you can use **conda** to install them in your
 root environment with  
-`conda install -c ripl-org --file requirements.txt`.
+`conda create -c ripl-org --file requirements.txt`.
 
 Or if you would prefer to create a named conda environment, use  
-`conda install -c ripl-org -n sirad-example --file requirements.txt`  
+`conda create -c ripl-org -n sirad-example --file requirements.txt`  
 and activate it with  
 `conda activate sirad-example`.
 
