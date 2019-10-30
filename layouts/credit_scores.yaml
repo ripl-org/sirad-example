@@ -10,4 +10,15 @@ fields:
     pii: dob
     type: date
     format: "%m-%d-%Y"
+- street_address:
+    pii: home_address
+- city:
+    pii: home_city
+- zip:
+    pii: home_zip5
 - credit_score
+- credit_date:
+    type: date
+    format: "%m/%d/%Y"
+    pii: home_date
+    data: true

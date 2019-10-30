@@ -18,4 +18,14 @@ fields:
 - file_date:
     type: date
     format: "%m/%d/%Y"
+    pii: home_date
+    data: true
 - agi
+- street_num:
+    pii: home_street_num
+- street_name:
+    pii: home_street
+- city:
+    pii: home_city
+- zipcode:
+    pii: home_zip5

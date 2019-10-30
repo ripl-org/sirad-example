@@ -54,6 +54,10 @@ def simulate_tax(number):
         d['birth_date'] = bd.strftime("%m-%d-%Y")
         d['file_date'] = fake.date_this_year().strftime("%m/%d/%Y")
         d['agi'] = int(20000 * np.random.lognormal())
+        d['street_num'] = fake.building_number()
+        d['street_name'] = fake.street_name() + ' ' + fake.street_suffix()
+        d['city'] = fake.city()
+        d['zipcode'] = fake.zipcode_in_state("RI")
         out.append(d)
 
     return out
@@ -83,11 +87,15 @@ def simulate_credit_scores(path):
                         d[fld] = ""
                     else:
                         d[fld] = row[fld]
+                d['street_address'] = fake.street_address() + ' ' + fake.street_suffix()
+                d['city'] = fake.city()
+                d['zip'] = fake.zipcode_in_state("RI")
                 # Simulate credit score as joint distribution with AGI with a normal error term
                 cscore = 300 + 225 * (math.log(float(row['agi']) / 20000.0) + 0.5 * np.random.normal())
                 # Clamp score
                 cscore = np.clip(cscore, 300, 850)
                 d['credit_score'] = int(cscore)
+                d['credit_date'] = fake.date_this_year().strftime("%m/%d/%Y")
                 out.append(d)
     return out
 
