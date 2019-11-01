@@ -27,5 +27,11 @@ fields:
     pii: home_street
 - city:
     pii: home_city
-- zipcode:
-    pii: home_zip5
+- zipfull:
+    pii: home_zip9
+- w2_empl_address:
+    pii: employer_address
+- w2_empl_city:
+    pii: employer_city
+- w2_empl_zipcode:
+    pii: employer_zip5

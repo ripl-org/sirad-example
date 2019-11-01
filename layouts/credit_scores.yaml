@@ -14,7 +14,7 @@ fields:
     pii: home_address
 - city:
     pii: home_city
-- zip:
+- zipcode:
     pii: home_zip5
 - credit_score
 - credit_date:

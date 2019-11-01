@@ -57,7 +57,10 @@ def simulate_tax(number):
         d['street_num'] = fake.building_number()
         d['street_name'] = fake.street_name() + ' ' + fake.street_suffix()
         d['city'] = fake.city()
-        d['zipcode'] = fake.zipcode_in_state("RI")
+        d['zipfull'] = fake.zipcode_in_state("RI") + "{:04d}".format(fake.random_int(min=0, max=9999))
+        d['w2_empl_address'] = fake.street_address() + ' ' + fake.street_suffix()
+        d['w2_empl_city'] = fake.city()
+        d['w2_empl_zip'] = fake.zipcode_in_state("RI")
         out.append(d)
 
     return out
@@ -89,7 +92,7 @@ def simulate_credit_scores(path):
                         d[fld] = row[fld]
                 d['street_address'] = fake.street_address() + ' ' + fake.street_suffix()
                 d['city'] = fake.city()
-                d['zip'] = fake.zipcode_in_state("RI")
+                d['zipcode'] = fake.zipcode_in_state("RI")
                 # Simulate credit score as joint distribution with AGI with a normal error term
                 cscore = 300 + 225 * (math.log(float(row['agi']) / 20000.0) + 0.5 * np.random.normal())
                 # Clamp score
