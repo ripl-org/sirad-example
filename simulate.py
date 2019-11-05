@@ -37,7 +37,22 @@ def get_birth_date():
         random.randint(1, 28)
     )
 
-def simulate_tax(number):
+def simulate_addresses():
+    streets = [(fake.street_name(), fake.city(), fake.zipcode()) for _ in range(N)]
+    with open(config.get_option("CENSUS_STREET_FILE"), "w") as f:
+        print("street,zip,blkgrp", file=f)
+        for street in streets:
+            print(street[0], street[2], random.randint(1, 10), sep=",", file=f)
+    with open(config.get_option("CENSUS_STREET_NUM_FILE"), "w") as f:
+        print("street_num,street,zip,blkgrp", file=f)
+        for street in streets:
+            for _ in range(random.randint(1, 3)):
+                blkgrp = random.randint(1, 10)
+                for _ in range(random.randint(1, 20)):
+                    print(fake.building_number(), street[0], street[2], blkgrp, sep=",", file=f)
+    return streets
+
+def simulate_tax(number, streets):
     perc_bad_ssn = 0.05
     for n in range(0, number):
         d = {}
@@ -54,18 +69,20 @@ def simulate_tax(number):
         d['birth_date'] = bd.strftime("%m-%d-%Y")
         d['file_date'] = fake.date_this_year().strftime("%m/%d/%Y")
         d['agi'] = int(20000 * np.random.lognormal())
+        street = streets[random.randint(0, N-1)]
         d['street_num'] = fake.building_number()
-        d['street_name'] = fake.street_name() + ' ' + fake.street_suffix()
-        d['city'] = fake.city()
-        d['zipfull'] = fake.zipcode_in_state("RI") + "{:04d}".format(fake.random_int(min=0, max=9999))
-        d['w2_empl_address'] = fake.street_address() + ' ' + fake.street_suffix()
-        d['w2_empl_city'] = fake.city()
-        d['w2_empl_zip'] = fake.zipcode_in_state("RI")
+        d['street_name'] = street[0]
+        d['city'] = street[1]
+        d['zipfull'] = street[2] + "{:04d}".format(fake.random_int(min=0, max=9999))
+        street = streets[random.randint(0, N-1)]
+        d['w2_empl_address'] = fake.building_number() + ' ' + street[0]
+        d['w2_empl_city'] = street[1]
+        d['w2_empl_zip'] = street[2]
         out.append(d)
 
     return out
 
-def simulate_credit_scores(path):
+def simulate_credit_scores(path, streets):
     """
     Create fake credit scores for subset of main person list.
 
@@ -90,9 +107,10 @@ def simulate_credit_scores(path):
                         d[fld] = ""
                     else:
                         d[fld] = row[fld]
-                d['street_address'] = fake.street_address() + ' ' + fake.street_suffix()
-                d['city'] = fake.city()
-                d['zipcode'] = fake.zipcode_in_state("RI")
+                street = streets[random.randint(0, N-1)]
+                d['street_address'] = fake.building_number() + ' ' + street[0]
+                d['city'] = street[1]
+                d['zipcode'] = street[2]
                 # Simulate credit score as joint distribution with AGI with a normal error term
                 cscore = 300 + 225 * (math.log(float(row['agi']) / 20000.0) + 0.5 * np.random.normal())
                 # Clamp score
@@ -117,9 +135,10 @@ def write_file(records, path, separator="|"):
 
 
 def main(tax_path, cscore_path):
-    tax = simulate_tax(N)
+    streets = simulate_addresses()
+    tax = simulate_tax(N, streets)
     people = write_file(tax, tax_path)
-    cscores = simulate_credit_scores(people)
+    cscores = simulate_credit_scores(people, streets)
     write_file(cscores, cscore_path)
 
 
