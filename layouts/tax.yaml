@@ -33,5 +33,5 @@ fields:
     pii: employer_address
 - w2_empl_city:
     pii: employer_city
-- w2_empl_zipcode:
+- w2_empl_zip:
     pii: employer_zip5

@@ -38,18 +38,18 @@ def get_birth_date():
     )
 
 def simulate_addresses():
-    streets = [(fake.street_name(), fake.city(), fake.zipcode()) for _ in range(N)]
+    streets = [(fake.city(), fake.city(), fake.zipcode()) for _ in range(N)]
     with open(config.get_option("CENSUS_STREET_FILE"), "w") as f:
         print("street,zip,blkgrp", file=f)
         for street in streets:
-            print(street[0], street[2], random.randint(1, 10), sep=",", file=f)
+            if random.random() > 0.3:
+                print(street[0].upper(), street[2], random.randint(1, 10), sep=",", file=f)
     with open(config.get_option("CENSUS_STREET_NUM_FILE"), "w") as f:
         print("street_num,street,zip,blkgrp", file=f)
         for street in streets:
-            for _ in range(random.randint(1, 3)):
-                blkgrp = random.randint(1, 10)
+            if random.random() > 0.3:
                 for _ in range(random.randint(1, 20)):
-                    print(fake.building_number(), street[0], street[2], blkgrp, sep=",", file=f)
+                    print(fake.building_number(), street[0].upper(), street[2], random.randint(1, 10), sep=",", file=f)
     return streets
 
 def simulate_tax(number, streets):
@@ -73,7 +73,7 @@ def simulate_tax(number, streets):
         d['street_num'] = fake.building_number()
         d['street_name'] = street[0]
         d['city'] = street[1]
-        d['zipfull'] = street[2] + "{:04d}".format(fake.random_int(min=0, max=9999))
+        d['zipfull'] = street[2] + "-{:04d}".format(random.randint(0, 9999))
         street = streets[random.randint(0, N-1)]
         d['w2_empl_address'] = fake.building_number() + ' ' + street[0]
         d['w2_empl_city'] = street[1]
