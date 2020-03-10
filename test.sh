@@ -2,6 +2,10 @@
 set -e
 rm -rf build raw
 python simulate.py
-sirad process -n 2
+sirad sources
+sirad validate
+sirad process
+sirad -n 2 process
 sirad research
+sirad -n 2 research
 python scatterplot.py
