@@ -16,10 +16,11 @@ from sirad import config
 N = 1000
 SEED = 1010
 
-fake = Faker()
-fake.seed(SEED)
+Faker.seed(SEED)
 random.seed(SEED)
 np.random.seed(SEED)
+
+fake = Faker()
 
 out = []
 
