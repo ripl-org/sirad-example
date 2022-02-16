@@ -14,6 +14,13 @@ please see our article in *Communications of the ACM*:
 > Unlocking Data to Improve Public Policy. *Communications of the ACM* **62**(10): 48-53.
 > doi:[10.1145/3335150](https://doi.org/10.1145/3335150)
 
+More detail on the development and features of `sirad` and additional applications
+are described in our article in *Software Impacts*:
+
+> M. Howison, M. Goggins. (2022).
+> SIRAD: Secure Infrastructure for Research with Administrative Data. *Software Impacts* **12**: 100245.
+> doi:[10.1016/j.simpa.2022.100245](https://doi.org/10.1016/j.simpa.2022.100245)
+
 ## Worked example
 
 In this worked example, we simulate two administrative data sets:
