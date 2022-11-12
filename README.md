@@ -136,3 +136,14 @@ from the `tax` table joined to the corresponding credit score from the
 
 **Note:** these variables are correlated by construction, and were drawn from a
 joint distribution (with added noise) in the simulation.
+
+### Additional example of replacing SSNs with salted hashes
+
+The script `hash_ssn.py` is a stand-alone example of how SIRAD validates SSNs against
+SSA rules and replaces SSNs with salted hash values. To test this on the synthetic
+data generated above, run:
+
+    python hash_ssn.py -i raw/tax.txt -c ssn -s 89146786766 -o raw/tax_hashed.csv -d '|'
+
+The output `raw/tax_hashed.csv` contains an additional column `ssn_invalid` that flags
+invalid SSNs, and the original `ssn` column has been replaced with salted hashes.
